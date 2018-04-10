@@ -50,24 +50,50 @@ class Form(FlaskForm):
 
     date_start = DateField('Start Date', [validators.Required('Please select a start date')], format='%Y-%m-%d')
     date_end = DateField('End Date', [validators.Required('Please select an end date')], format='%Y-%m-%d')
-    recalibrate_days = StringField('Stock', [validators.Required('Start typing ticker symbol and select'),
-                                  validators.Length(min=1, max=5)], id = "ticker")
-    volume_window_days = StringField('Stock', [validators.Required('Start typing ticker symbol and select'),
-                                  validators.Length(min=1, max=5)], id = "ticker")
 
-    coin_universe_filter_number = StringField('Stock', [validators.Required('Start typing ticker symbol and select'),
-                                  validators.Length(min=1, max=5)], id = "ticker")
+    choices1 = []
+    for i in range(4, 56):
+        choices1.append((i, i))
 
-    coin_allocation_number = StringField('Stock', [validators.Required('Start typing ticker symbol and select'),
-                                  validators.Length(min=1, max=5)], id = "ticker")
+    choices2 = []
+    for i in range(10, 140):
+        choices2.append((i, i))
 
-    performance_window_days = StringField('Stock', [validators.Required('Start typing ticker symbol and select'),
-                                  validators.Length(min=1, max=5)], id = "ticker")
+    choices3 = []
+    for i in range(5, 70):
+        choices3.append((i, i))
 
-    global_start_btc = StringField('Stock', [validators.Required('Start typing ticker symbol and select'),
-                                  validators.Length(min=1, max=5)], id = "ticker")
+    choices4 = []
+    for i in range(3, 70):
+        choices4.append((i, i))
+
+    choices5 = []
+    for i in range(2, 98):
+        choices5.append((i, i))
+
+    choices6 = []
+    for i in range(1, 20):
+        choices6.append((i, i))
+
+    recalibrate_days = SelectField('Recalibration Days', choices=choices1, coerce=int, default=7)
+
+    volume_window_days = SelectField('Volume Lookback Days', choices=choices2, coerce=int, default=70)
 
 
+
+    coin_universe_filter_number = SelectField('Top N Coins By Volume Universe ', choices=choices3, coerce=int, default=20)
+
+
+
+    coin_allocation_number = SelectField('Top N Coins To Weight', choices=choices4, coerce=int, default=10)
+
+
+
+    performance_window_days = SelectField('Momentum Lookback Days', choices=choices5, coerce=int, default=21)
+
+
+
+    global_start_btc = SelectField('Amount Of BTC At Start', choices=choices6, coerce=int, default=1)
 
 
 @application.route('/', methods=['GET', 'POST'])
@@ -75,15 +101,41 @@ def index():
     form = Form()
     if request.method == 'POST' and form.validate():
 
-        security = request.form['stock']
+        date_start_ = request.form['date_start']
+        date_end_ = request.form['date_end']
+        recalibrate_days_ = int(request.form['recalibrate_days'])
+        volume_window_days_ = int(request.form['volume_window_days'])
+        coin_universe_filter_number_ = int(request.form['coin_universe_filter_number'])
+        coin_allocation_number_ = int(request.form['coin_allocation_number'])
+        performance_window_days_ = int(request.form['performance_window_days'])
+        global_start_btc_ = int(request.form['global_start_btc'])
 
-        return redirect(url_for('results'))
+        return redirect(url_for('results', date_start_ = date_start_, date_end_ = date_end_,
+                    recalibrate_days_ = recalibrate_days_, volume_window_days_ = volume_window_days_,
+                    coin_universe_filter_number_ = coin_universe_filter_number_,
+                    coin_allocation_number_ = coin_allocation_number_,
+                    performance_window_days_ = performance_window_days_,
+                    global_start_btc_ = global_start_btc_))
 
-    return render_template('index.html', form = form)
+    return render_template('index.html', form=form)
 
 
-@application.route('/results')
-def results(security1,security2,start_date,end_date):
+@application.route('/results/<date_start_>/<date_end_>/<int:recalibrate_days_>/'
+                   '<int:volume_window_days_>/<int:coin_universe_filter_number_>/<int:coin_allocation_number_>'
+                   '/<int:performance_window_days_>/<int:global_start_btc_>')
+def results(date_start_,date_end_,recalibrate_days_,volume_window_days_,coin_universe_filter_number_,
+            coin_allocation_number_,performance_window_days_,global_start_btc_):
+
+    print(type(date_start_))
+    print(type(date_end_))
+    print(type(recalibrate_days_))
+    print(type(volume_window_days_))
+
+
+    print(date_start_)
+    print(date_end_)
+    print(recalibrate_days_)
+    print(volume_window_days_)
 
 
     return render_template('results.html')
@@ -91,46 +143,6 @@ def results(security1,security2,start_date,end_date):
 
 
 
-# ## evenutally ##
-# @application.route('/results/result/<security1>/<security2>/<start_date>/<end_date>')
-# def correlation_result(security1,security2,start_date,end_date):
-#
-#
-#     return render_template('results.html')
-
-
-# class StockForm(FlaskForm):
-#     stock = StringField('Stock', [validators.Required('Start typing ticker symbol and select'),
-#                                   validators.Length(min=1, max=5)], id = "ticker")
-#     date_start = DateField('Start Date', [validators.Required('Please select a start date')], format='%Y-%m-%d')
-#     date_end = DateField('End Date', [validators.Required('Please select an end date')], format='%Y-%m-%d')
-#
-#
-# @application.route('/', methods=['GET', 'POST'])
-# def index():
-#     form = HomepageForm()
-#     if request.method == 'POST' and form.validate():
-#
-#         security = request.form['stock']
-#
-#         return redirect(url_for('results', security=security, start_date='2010-09-20',
-#                                 end_date='2017-09-19', sma_=20, lma_=80))
-#
-#     return render_template('index.html', form = form)
-#
-#
-# @application.route('/daysout', methods=['GET', 'POST'])
-# def results():
-#     form = StockForm()
-#     if request.method == 'POST' and form.validate():
-#
-#         security = request.form['stock']
-#         start_date = request.form['date_start']
-#         end_date = request.form['date_end']
-#
-#         return redirect(url_for('daysout_result', security=security, start_date=start_date, end_date=end_date))
-#
-#     return render_template('daysout.html', form=form)
 
 
 
