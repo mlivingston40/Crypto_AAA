@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+  <title>Dashboard</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+
+</head>
+<body>
+<!--<script src="/static/graphs/today_graph.js"></script>   this is not working/loading... hard coded in html below-->
+<script>
+/* Highcharts for dashboard coins -- on load... not a very scalable solution.. need better way to reuse code */
+$(function () {
+// begin chart for btc
+    $('#btc_chart').highcharts({
+        chart: {
+            zoomType: 'x',
+           // type: 'line'
+        },
+        credits: {
+            enabled: false
+        },
+        xAxis: {
+            lineWidth: 0,
+            minorGridLineWidth: 0,
+            lineColor: 'transparent',
+            labels: {
+                enabled: false
+            },
+            minorTickLength: 0,
+            tickLength: 0,
+            type: 'datetime',
+            gridLineWidth: 0,
+            title: {
+                text: null
+                },
+        },
+        title: {
+            text: false
+        },
+        yAxis: {
+            labels: {
+                enabled: false
+            },
+            title: {
+                text: null
+                },
+            gridLineWidth: 0
+        },
+        tooltip: {
+            valueDecimals: 2,
+            valuePrefix: '$',
+            seriesName: ''
+            //valueSuffix: ' USD'
+        },
+        plotOptions: {
+            area: {
+                fillColor: {
+                    linearGradient: {
+                        x1: 0,
+                        y1: 0,
+                        x2: 0,
+                        y2: 1
+                    },
+                    stops: [
+                        [0, Highcharts.getOptions().colors[0]],
+                        [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                    ]
+                },
+                marker: {
+                    radius: 2
+                },
+                lineWidth: 1,
+                states: {
+                    hover: {
+                        lineWidth: 1
+                    }
+                },
+                threshold: null
+            },
+            series: {
+                tooltip: {
+                    pointFormat: '<b>{point.y}</b><br/>'
+                }
+            }
+        },
+        series: [{
+            type: 'area',
+            showInLegend: false,
+            data: {{btc_data | safe}}
+        }]
+    });
+// begin chart for eth
+    $('#eth_chart').highcharts({
+        chart: {
+            zoomType: 'x',
+           // type: 'line'
+        },
+        credits: {
+            enabled: false
+        },
+        xAxis: {
+            lineWidth: 0,
+            minorGridLineWidth: 0,
+            lineColor: 'transparent',
+            labels: {
+                enabled: false
+            },
+            minorTickLength: 0,
+            tickLength: 0,
+            type: 'datetime',
+            gridLineWidth: 0,
+            title: {
+                text: null
+                },
+        },
+        title: {
+            text: false
+        },
+        yAxis: {
+            labels: {
+                enabled: false
+            },
+            title: {
+                text: null
+                },
+            gridLineWidth: 0
+        },
+        tooltip: {
+            valueDecimals: 2,
+            valuePrefix: '$',
+            seriesName: ''
+            //valueSuffix: ' USD'
+        },
+        plotOptions: {
+            area: {
+                fillColor: {
+                    linearGradient: {
+                        x1: 0,
+                        y1: 0,
+                        x2: 0,
+                        y2: 1
+                    },
+                    stops: [
+                        [0, Highcharts.getOptions().colors[0]],
+                        [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                    ]
+                },
+                marker: {
+                    radius: 2
+                },
+                lineWidth: 1,
+                states: {
+                    hover: {
+                        lineWidth: 1
+                    }
+                },
+                threshold: null
+            },
+            series: {
+                tooltip: {
+                    pointFormat: '<b>{point.y}</b><br/>'
+                }
+            }
+        },
+        series: [{
+            type: 'area',
+            showInLegend: false,
+            data: {{eth_data | safe}}
+        }]
+    });
+// begin chart for ltc
+    $('#ltc_chart').highcharts({
+        chart: {
+            zoomType: 'x',
+           // type: 'line'
+        },
+        credits: {
+            enabled: false
+        },
+        xAxis: {
+            lineWidth: 0,
+            minorGridLineWidth: 0,
+            lineColor: 'transparent',
+            labels: {
+                enabled: false
+            },
+            minorTickLength: 0,
+            tickLength: 0,
+            type: 'datetime',
+            gridLineWidth: 0,
+            title: {
+                text: null
+                },
+        },
+        title: {
+            text: false
+        },
+        yAxis: {
+            labels: {
+                enabled: false
+            },
+            title: {
+                text: null
+                },
+            gridLineWidth: 0
+        },
+        tooltip: {
+            valueDecimals: 2,
+            valuePrefix: '$',
+            seriesName: ''
+            //valueSuffix: ' USD'
+        },
+        plotOptions: {
+            area: {
+                fillColor: {
+                    linearGradient: {
+                        x1: 0,
+                        y1: 0,
+                        x2: 0,
+                        y2: 1
+                    },
+                    stops: [
+                        [0, Highcharts.getOptions().colors[0]],
+                        [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                    ]
+                },
+                marker: {
+                    radius: 2
+                },
+                lineWidth: 1,
+                states: {
+                    hover: {
+                        lineWidth: 1
+                    }
+                },
+                threshold: null
+            },
+            series: {
+                tooltip: {
+                    pointFormat: '<b>{point.y}</b><br/>'
+                }
+            }
+        },
+        series: [{
+            type: 'area',
+            showInLegend: false,
+            data: {{ltc_data | safe}}
+        }]
+    });
+});
+</script>
+<div class="container-fluid">
+
+                        <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">
+                            Crypto Pulses
+                        </h1>
+                     <div class="container">
+                        <h2>Search a keyword(s)</h2>
+                            <input class="form-control" id="myInput" type="text" placeholder="Search..">
+                     </div>
+                        <ol class="breadcrumb">
+                            <li class="active">
+                                <i class="fa fa-dashboard"></i> Dashboard
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+                <!-- /.row -->
+            <h2>Prices</h2>
+                <div class="row">
+
+                    <div class="col">
+                        <div class="card">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="card-block">
+                                        <img src="/static/coins/bitcoin.svg" alt="BTC">
+                                        <h4 class="card-title">Bitcoin</h4>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="card-block">
+                                        <h4 class="card-text-right">{{ btc_price | safe }}</h4>
+                                        <h6 class="card-text-right">{{ btc_change | safe }}</h6>
+                                        <p class="card-text"><small class="text-muted">Last updated 5 mins ago</small></p>
+                                    </div>
+                                </div>
+                            </div>
+                                <div id= "btc_chart" style="height: 10rem;"></div>
+                                <a href="{{ url_for('bitcoin') }}" class="btn btn-primary">BTC HOME</a>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="card">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="card-block">
+                                        <img src="/static/coins/ether.svg" alt="BTC">
+                                        <h4 class="card-title">Ethereum</h4>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="card-block">
+                                        <h4 class="card-text-right">{{ eth_price | safe }}</h4>
+                                        <h6 class="card-text-right">{{ eth_change | safe }}</h6>
+                                        <p class="card-text"><small class="text-muted">Last updated 5 mins ago</small></p>
+                                    </div>
+                                </div>
+                            </div>
+                                <div id= "eth_chart" style="height: 10rem;"></div>
+                                <a href="{{ url_for('ethereum') }}" class="btn btn-primary">ETH HOME</a>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="card">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="card-block">
+                                        <img src="/static/coins/litecoin.svg" alt="BTC">
+                                        <h4 class="card-title">Litecoin</h4>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="card-block">
+                                        <h4 class="card-text-right">{{ ltc_price | safe }}</h4>
+                                        <h6 class="card-text-right">{{ ltc_change | safe }}</h6>
+                                        <p class="card-text"><small class="text-muted">Last updated 5 mins ago</small></p>
+                                    </div>
+                                </div>
+                            </div>
+                                <div id= "ltc_chart" style="height: 10rem;"></div>
+                                <a href="{{ url_for('litecoin') }}" class="btn btn-primary">LTC HOME</a>
+                        </div>
+                    </div>
+
+                </div> <!--close row-->
+
+</div> <!--close prices-->
+
+
+<div class="container-fluid" id="dash">  <!--searchable information via jquery function-->
+
+                {% if news %}
+                <h2>News</h2>
+                <div class="row">
+                      {% for new in news%}
+                          <div class="col">
+                              <div class="card">
+                                <div class="card-block">
+                                  <h5 class="card-title">{{ new[0] | safe }}</h5>
+                                  <p class="card-text">{{ new[1] | safe }}
+                                    <br>
+                                    <a href="{{ new[2] | safe }}" target="_blank" class="btn btn-primary">Full Article</a>
+                                    </p>
+                                </div>
+                              </div>
+                          </div>
+                      {% endfor %}
+                 </div> <!--close row-->
+                {% endif %}
+
+                {% if tweets %}
+                <h2>Twitter</h2>
+                <div class="row">
+                      {% for tweet in tweets%}
+                          <div class="col">
+                              <div class="card">
+                                <div class="card-block">
+                                  <p class="card-text">{{ tweet[1] | safe }}
+                                    <br>
+                                    {{ tweet[0] | safe }}
+                                    </p>
+                                </div>
+                              </div>
+                          </div>
+                      {% endfor %}
+                 </div> <!--close row-->
+                {% endif %}
+
+                {% if comments %}
+                <h2>Reddit</h2>
+                <div class="row">
+                      {% for comment in comments%}
+                          <div class="col">
+                              <div class="card">
+                                <div class="card-block">
+                                  <p class="card-text">{{ comment[0] | safe }}
+                                    <br>
+                                      <strong>{{ comment[1] | safe }}</strong>
+                                    </p>
+                                </div>
+                              </div>
+                          </div>
+                      {% endfor %}
+                 </div> <!--close row-->
+                {% endif %}
+
+</div>
+
+<script>
+$(document).ready(function(){
+  $("#myInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#dash div[class='col']").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+</script>
+</body>
+</html>

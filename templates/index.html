@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+
+
+<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="Stock Backtest is a must use tool for any trader looking to gain an edge.
+    Get started today and backtest multiple strategies, for free.">
+    <meta name="author" content="">
+
+    <title>Stock Modeling - Days Out</title>
+
+    <!-- Bootstrap -->
+
+    <link href="/static/theme/vendor/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="/static/theme/css/grayscale2.css" rel="stylesheet">
+    <link href="/static/theme/css/accordion.css" rel="stylesheet">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <!-- Custom fonts for this template -->
+    <link href="/static/theme/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet"
+          type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Cabin:700' rel='stylesheet' type='text/css'>
+
+    <!-- Code for easy autocomplete -->
+
+    <link rel="stylesheet" href="/static/css/easy-autocomplete.css">
+    <link rel="stylesheet" href="/static/css/easy-autocomplete.themes.css">
+
+    <!-- Code for Date Picker -->
+    <link rel="stylesheet"
+          href="https://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/a549aa8780dbda16f6cff545aeabc3d71073911e/build/css/bootstrap-datetimepicker.css">
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.js"></script>
+	<script type="text/javascript" src="/static/js/transition.js"></script>
+    <script type="text/javascript" src="/static/js/collapse.js"></script>
+    <script type="text/javascript" src="/static/js/moment.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-datetimepicker.js"></script>
+
+<!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-107119024-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments)};
+  gtag('js', new Date());
+  gtag('config', 'UA-107119024-1');
+</script>
+
+</head>
+
+<body>
+
+{% include 'navbar.html' %}
+
+<!--Container for rest of body-->
+<div class="container">
+
+    <!--Custom padding across top	-->
+    <div class="col-xs-12">
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+    </div>
+    <!--Beginning Form and Info Panel on same row-->
+    <div class="row">
+        <!--Begin Form Row-->
+        <div class="col-xs-12 col-md-6 col-lg-4 pull-left">
+
+            <h2 class="page-header">
+                Days Out Backtest
+            </h2>
+
+            {% block content %}
+
+            {% for message in get_flashed_messages() %}
+            <div class="alert alert-warning alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"
+                <span
+                        aria-hidden="true">&times;</span></button>
+                {{ message }}
+            </div>
+            {% endfor %}
+            <!-- Begin Form  -->
+            <form method="post" action="{{ url_for('daysout') }}">
+                {{ form.hidden_tag() }}
+
+                <div class="form-group row">
+                    <div class="col-sm-10 col-lg-10">
+                        {{ form.stock.label |safe }}
+                        {{ form.stock(placeholder="e.g., GOOG", class="form-control")|safe }}
+                        <div id="data"></div>
+                        {% if form.stock.errors %}
+                        <ul class="alert alert-info alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"
+                            <span
+                                    aria-hidden="true">&times;</span></button>
+                            {% for error in form.stock.errors %}
+                            <strong>{{ error }}</strong>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-sm-10 col-lg-10">
+                        {{ form.date_start.label }}
+                        <div class='input-group date' id='date_start' style="color:black">
+                            <input name='date_start' class="form-control"/>
+                            <span class="input-group-addon">
+									<span class="glyphicon glyphicon-calendar"></span>
+						        </span>
+
+                        </div>
+                        {% if form.date_start.errors %}
+                        <ul class="alert alert-info alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                            {% for error in form.date_start.errors %}
+                            <strong>{{ error }}</strong> {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-sm-10 col-lg-10">
+                        {{ form.date_end.label }}
+                        <div class='input-group date' id='date_end' style="color:black">
+                            <input name='date_end' class="form-control"/>
+                            <span class="input-group-addon">
+									<span class="glyphicon glyphicon-calendar"></span>
+						        </span>
+                        </div>
+                        {% if form.date_end.errors %}
+                        <ul class="alert alert-info alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                            {% for error in form.date_end.errors %}
+                            <strong>{{ error }}</strong> {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-sm-10 col-lg-10">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </form>
+            <!-- End Form -->
+            {% endblock %}
+
+        </div><!--Form End-->
+
+        <!--Info Panel Beg-->
+        <div class="col-xs-12 col-md-6 pull-right col-lg-6">
+            <h3>Information Panel</h3>
+            <div class="panel-group wrap" id="accordion" role="tablist" aria-multiselectable="true">
+
+                <div class="panel">
+                    <div class="panel-heading" role="tab" id="headingTwo">
+                        <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                               href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                About This Backtest
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                        <div class="panel-body">
+                            The model grabs the adjusted closing price of the last trading day of the month as the
+                            anchor 'buy'. From there, days 1-15 out from this point
+                            are used to calculate a return from the adjusted closing 'sell' price. All these trades are
+                            aggregated by 'Day Out' for your selected time period.
+                        </div>
+                    </div>
+                </div>
+                <!-- end of panel -->
+
+                <div class="panel">
+                    <div class="panel-heading" role="tab" id="headingThree">
+                        <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                               href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                Data Source
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel"
+                         aria-labelledby="headingThree">
+                        <div class="panel-body">
+                            The data source used for this is WIKI Prices maintained by <a href="https://www.quandl.com/"
+                                                                                          target="_blank">Quandl</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- end of panel -->
+
+                <div class="panel">
+                    <div class="panel-heading" role="tab" id="headingFour">
+                        <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                               href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                Caveats
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseFour" class="panel-collapse collapse" role="tabpanel"
+                         aria-labelledby="headingFour">
+                        <div class="panel-body">
+                            <ul style="list-style-type:circle">
+                                <li>As mentioned, the last <i>trading</i> day of the month is used as the anchor and x
+                                    <i>trading</i> day(s) out are used as the sell dates
+                                </li>
+                                <li>Adjusted closing prices are used which account for all of the dividends and splits
+                                    since that day
+                                </li>
+                                <li>The points that comprise of the aggregate return can have high variance - Please use
+                                    the bar chart w/ drilldown to see composition
+                                </li>
+                                <li>For interesting results, try testing date ranges during bull and bear time periods
+                                </li>
+                                <li>Please trade at <strong>your own risk</strong>, stockbacktest.io is not responsible
+                                    for trading losses
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- end of panel -->
+
+            </div>
+            <!-- end of #accordion -->
+        </div>
+
+    </div><!--row-->
+
+
+    <hr>
+
+    <footer>
+	<p>Disclaimer: content on this site should not be used when making investment decisions. Investors should seek professional financial advice.</p>
+        <p>Copyright &copy; Stockbacktest.io 2017</p>
+    </footer>
+</div>
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+
+<script src="/static/js/jquery.easy-autocomplete.min.js"></script>
+
+ <!-- dayys out custom js / jquery for updating cal and notifying -->
+<script src="/static/theme/js/daysoutpick.js"></script>
+
+
+<!-- Custom scripts for this template -->
+<script src="/static/theme/js/grayscale.js"></script>
+
+<!-- core bootstrap from vendor -->
+<script src="/static/theme/vendor/bootstrap/js/bootstrap.js"></script>
+
+<!-- jquery for the accordion style widget -->
+<script src="/static/theme/js/accordion.js"></script>
+
+<!--added this back int below...is this why autocomplete breaks some times??-->
+<!--<script>window.jQuery || document.write('<script src="../../static/theme/vendor/jquery/jquery.js"><\/script>')</script>-->
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="../../static/js/ie10-viewport-bug-workaround.js"></script>
+<script src="../../static/js/dropdown.js"></script>
+
+
+</body>
+</html>
