@@ -11,7 +11,7 @@
     Get started today and backtest multiple strategies, for free.">
     <meta name="author" content="">
 
-    <title>Stock Modeling - Days Out</title>
+    <title>Crypto Modeling - Equal Weight Momentum</title>
 
     <!-- Bootstrap -->
 
@@ -47,20 +47,11 @@
     <script type="text/javascript" src="/static/js/moment.js"></script>
     <script type="text/javascript" src="/static/js/bootstrap-datetimepicker.js"></script>
 
-<!-- Global Site Tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-107119024-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments)};
-  gtag('js', new Date());
-  gtag('config', 'UA-107119024-1');
-</script>
 
 </head>
 
 <body>
 
-{% include 'navbar.html' %}
 
 <!--Container for rest of body-->
 <div class="container">
@@ -79,7 +70,7 @@
         <div class="col-xs-12 col-md-6 col-lg-4 pull-left">
 
             <h2 class="page-header">
-                Days Out Backtest
+                Adaptive Asset Allocation - Equal Weight
             </h2>
 
             {% block content %}
@@ -93,20 +84,104 @@
             </div>
             {% endfor %}
             <!-- Begin Form  -->
-            <form method="post" action="{{ url_for('daysout') }}">
+            <form method="post" action="{{ url_for('index') }}">
                 {{ form.hidden_tag() }}
 
                 <div class="form-group row">
                     <div class="col-sm-10 col-lg-10">
-                        {{ form.stock.label |safe }}
-                        {{ form.stock(placeholder="e.g., GOOG", class="form-control")|safe }}
-                        <div id="data"></div>
-                        {% if form.stock.errors %}
+                        {{ form.recalibrate_days.label |safe }}
+                        {{ form.recalibrate_days(placeholder="e.g., GOOG", class="form-control")|safe }}
+                        {% if form.recalibrate_days.errors %}
                         <ul class="alert alert-info alert-dismissible" role="alert">
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close"
                             <span
                                     aria-hidden="true">&times;</span></button>
-                            {% for error in form.stock.errors %}
+                            {% for error in form.recalibrate_days.errors %}
+                            <strong>{{ error }}</strong>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-sm-10 col-lg-10">
+                        {{ form.volume_window_days.label |safe }}
+                        {{ form.volume_window_days(placeholder="e.g., GOOG", class="form-control")|safe }}
+                        {% if form.volume_window_days.errors %}
+                        <ul class="alert alert-info alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"
+                            <span
+                                    aria-hidden="true">&times;</span></button>
+                            {% for error in form.volume_window_days.errors %}
+                            <strong>{{ error }}</strong>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-sm-10 col-lg-10">
+                        {{ form.coin_universe_filter_number.label |safe }}
+                        {{ form.coin_universe_filter_number(placeholder="e.g., GOOG", class="form-control")|safe }}
+                        {% if form.coin_universe_filter_number.errors %}
+                        <ul class="alert alert-info alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"
+                            <span
+                                    aria-hidden="true">&times;</span></button>
+                            {% for error in form.coin_universe_filter_number.errors %}
+                            <strong>{{ error }}</strong>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-sm-10 col-lg-10">
+                        {{ form.coin_allocation_number.label |safe }}
+                        {{ form.coin_allocation_number(placeholder="e.g., GOOG", class="form-control")|safe }}
+                        {% if form.coin_allocation_number.errors %}
+                        <ul class="alert alert-info alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"
+                            <span
+                                    aria-hidden="true">&times;</span></button>
+                            {% for error in form.coin_allocation_number.errors %}
+                            <strong>{{ error }}</strong>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-sm-10 col-lg-10">
+                        {{ form.performance_window_days.label |safe }}
+                        {{ form.performance_window_days(placeholder="e.g., GOOG", class="form-control")|safe }}
+                        {% if form.performance_window_days.errors %}
+                        <ul class="alert alert-info alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"
+                            <span
+                                    aria-hidden="true">&times;</span></button>
+                            {% for error in form.performance_window_days.errors %}
+                            <strong>{{ error }}</strong>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+
+                 <div class="form-group row">
+                    <div class="col-sm-10 col-lg-10">
+                        {{ form.global_start_btc.label |safe }}
+                        {{ form.global_start_btc(placeholder="e.g., GOOG", class="form-control")|safe }}
+                        {% if form.global_start_btc.errors %}
+                        <ul class="alert alert-info alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"
+                            <span
+                                    aria-hidden="true">&times;</span></button>
+                            {% for error in form.global_start_btc.errors %}
                             <strong>{{ error }}</strong>
                             {% endfor %}
                         </ul>

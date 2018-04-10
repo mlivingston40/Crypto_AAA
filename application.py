@@ -17,36 +17,36 @@ application.secret_key = 'donttellnobody'
 
 ##### PARAMETERS TO CHANGED GloballY in UI #####
 
-global_start = datetime.datetime(2017,10,23)
-global_start_ = int(global_start.strftime("%s"))
-
-global_end = datetime.datetime(2018,4,8)
-global_end_ = int(global_end.strftime("%s"))
-
-## How often to re-allocate ##
-recalibrate_days = 7
-
-## Window to look back on for momentum ##
-performance_window_days = -14
-
-## Window to look back on for global volume filter ##
-volume_window_days = 70
-
-## Number of coins for momentum -- Has to be less than 20 and greater than 3 ##
-coin_universe_filter = 5
-
-## Number of coins for momentum -- Has to be less than 20 and greater than 3 ##
-coin_allocation = 5
-
-## Your starting BTC to backtest w/ ##
-global_start_btc = 5
+# global_start = datetime.datetime(2017,10,23)
+# global_start_ = int(global_start.strftime("%s"))
+#
+# global_end = datetime.datetime(2018,4,8)
+# global_end_ = int(global_end.strftime("%s"))
+#
+# ## How often to re-allocate ##
+# recalibrate_days = 7
+#
+# ## Window to look back on for momentum ##
+# performance_window_days = -14
+#
+# ## Window to look back on for global volume filter ##
+# volume_window_days = 70
+#
+# ## Number of coins for momentum -- Has to be less than 20 and greater than 3 ##
+# coin_universe_filter = 5
+#
+# ## Number of coins for momentum -- Has to be less than 20 and greater than 3 ##
+# coin_allocation = 5
+#
+# ## Your starting BTC to backtest w/ ##
+# global_start_btc = 5
 
 
 
 ##### PARAMETERS TO CHANGED GloballY in UI #####
 
 
-class StockForm(FlaskForm):
+class Form(FlaskForm):
 
     date_start = DateField('Start Date', [validators.Required('Please select a start date')], format='%Y-%m-%d')
     date_end = DateField('End Date', [validators.Required('Please select an end date')], format='%Y-%m-%d')
@@ -55,10 +55,10 @@ class StockForm(FlaskForm):
     volume_window_days = StringField('Stock', [validators.Required('Start typing ticker symbol and select'),
                                   validators.Length(min=1, max=5)], id = "ticker")
 
-    coin_universe_filter = StringField('Stock', [validators.Required('Start typing ticker symbol and select'),
+    coin_universe_filter_number = StringField('Stock', [validators.Required('Start typing ticker symbol and select'),
                                   validators.Length(min=1, max=5)], id = "ticker")
 
-    coin_allocation = StringField('Stock', [validators.Required('Start typing ticker symbol and select'),
+    coin_allocation_number = StringField('Stock', [validators.Required('Start typing ticker symbol and select'),
                                   validators.Length(min=1, max=5)], id = "ticker")
 
     performance_window_days = StringField('Stock', [validators.Required('Start typing ticker symbol and select'),
@@ -72,7 +72,7 @@ class StockForm(FlaskForm):
 
 @application.route('/', methods=['GET', 'POST'])
 def index():
-    form = HomepageForm()
+    form = Form()
     if request.method == 'POST' and form.validate():
 
         security = request.form['stock']
@@ -82,8 +82,8 @@ def index():
     return render_template('index.html', form = form)
 
 
-@application.route('/results/result/<security1>/<security2>/<start_date>/<end_date>')
-def correlation_result(security1,security2,start_date,end_date):
+@application.route('/results')
+def results(security1,security2,start_date,end_date):
 
 
     return render_template('results.html')
@@ -140,7 +140,8 @@ def correlation_result(security1,security2,start_date,end_date):
 
 
 if __name__ == "__main__":
-    application.run(debug=False, threaded=True)
+    application.jinja_env.auto_reload = True
+    application.run(debug=True, threaded=True)
 
 
 
