@@ -10,6 +10,12 @@ from flask import Flask, render_template, request, redirect, flash, url_for
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, DateField, validators, SelectField
 
+from Math.trade_days import *
+from Math.trades import *
+from Data.poloniex import *
+import numpy as np
+import pandas as pd
+
 
 application = Flask(__name__)
 application.secret_key = 'donttellnobody'
@@ -120,32 +126,55 @@ def index():
     return render_template('index.html', form=form)
 
 
+# @application.route('/results/<date_start_>/<date_end_>/<int:recalibrate_days_>/'
+#                    '<int:volume_window_days_>/<int:coin_universe_filter_number_>/<int:coin_allocation_number_>'
+#                    '/<int:performance_window_days_>/<int:global_start_btc_>')
+# def results(date_start_,date_end_,recalibrate_days_,volume_window_days_,coin_universe_filter_number_,
+#             coin_allocation_number_,performance_window_days_,global_start_btc_):
+#
+#
+#
+#
+#     TD = TradeDays(date_start_,date_end_,volume_window_days_,performance_window_days_,recalibrate_days_).trade_days_df()
+#
+#
+#
+#
+#
+#
+#     return render_template('results.html')
+
+
+
 @application.route('/results/<date_start_>/<date_end_>/<int:recalibrate_days_>/'
                    '<int:volume_window_days_>/<int:coin_universe_filter_number_>/<int:coin_allocation_number_>'
                    '/<int:performance_window_days_>/<int:global_start_btc_>')
 def results(date_start_,date_end_,recalibrate_days_,volume_window_days_,coin_universe_filter_number_,
             coin_allocation_number_,performance_window_days_,global_start_btc_):
 
-    print(type(date_start_))
-    print(type(date_end_))
-    print(type(recalibrate_days_))
-    print(type(volume_window_days_))
+    master_data = Data(date_start_, date_end_, volume_window_days_).master_df()
+
+    trades_days_df = TradeDays(date_start_,date_end_,volume_window_days_,performance_window_days_,recalibrate_days_).trade_days_df()
+
+    test_df = Trades(master_data,trades_days_df,date_start_,date_end_,volume_window_days_,performance_window_days_,coin_universe_filter_number_,coin_allocation_number_,global_start_btc_).trade_positions()
+
+    # test = []
+    # test.append({'test': 'hello', 'test3': 'blah'})
+    # test_df = pd.DataFrame(test)
+    #
+    # # return test_df.to_html
+    # x = pd.DataFrame(np.random.randn(20, 5))
+
+    # return render_template('results_test.html', name='blah', data=x.to_html)
+
+    return(test_df.to_html())
 
 
-    print(date_start_)
-    print(date_end_)
-    print(recalibrate_days_)
-    print(volume_window_days_)
-
-
-    return render_template('results.html')
-
-
-
-
-
-
-
+# @app.route('/analysis/<filename>')
+# def analysis(filename):
+#     x = pd.DataFrame(np.random.randn(20, 5))
+#     return render_template("analysis.html", name=filename, data=x.to_html())
+#                                                                 # ^^^^^^^^^
 
 
 
