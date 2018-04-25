@@ -13,8 +13,10 @@ from wtforms import StringField, IntegerField, DateField, validators, SelectFiel
 from Math.trade_days import *
 from Math.trades import *
 from Data.poloniex import *
+# from Data.mysql_poloniex import *
 import numpy as np
 import pandas as pd
+import time
 
 
 application = Flask(__name__)
@@ -152,11 +154,13 @@ def index():
 def results(date_start_,date_end_,recalibrate_days_,volume_window_days_,coin_universe_filter_number_,
             coin_allocation_number_,performance_window_days_,global_start_btc_):
 
-    master_data = Data(date_start_, date_end_, volume_window_days_).master_df()
+    # start = time.time()
+
+    # master_data = Data(date_start_, date_end_, volume_window_days_).master_df()
 
     trades_days_df = TradeDays(date_start_,date_end_,volume_window_days_,performance_window_days_,recalibrate_days_).trade_days_df()
 
-    test_df = Trades(master_data,trades_days_df,date_start_,date_end_,volume_window_days_,performance_window_days_,coin_universe_filter_number_,coin_allocation_number_,global_start_btc_).trade_positions()
+    # test_df = Trades(master_data,trades_days_df,date_start_,date_end_,volume_window_days_,performance_window_days_,coin_universe_filter_number_,coin_allocation_number_,global_start_btc_).trade_positions()
 
     # test = []
     # test.append({'test': 'hello', 'test3': 'blah'})
@@ -167,7 +171,13 @@ def results(date_start_,date_end_,recalibrate_days_,volume_window_days_,coin_uni
 
     # return render_template('results_test.html', name='blah', data=x.to_html)
 
-    return(test_df.to_html())
+    # end = time.time()
+    # print(end - start)
+    # print(len(master_data))
+
+    # return(test_df.to_html())
+
+    return(trades_days_df.to_html())
 
 
 # @app.route('/analysis/<filename>')

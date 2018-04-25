@@ -1,5 +1,6 @@
 import pandas as pd
-
+## should build something in for no return at all
+###make just btc then
 
 def top_momentum_df(rel_universe, num_coins_allocate, df, start_date, end_date):
 
@@ -22,7 +23,16 @@ def top_momentum_df(rel_universe, num_coins_allocate, df, start_date, end_date):
 
     # account for only positive momentum #
 
-    return top_returns[top_returns.Momentum > 0]
+    top_returns = top_returns[top_returns.Momentum > 0]
+
+    if len(top_returns) == 0:
+
+        top_returns = top_returns.append({'Pair': 'USDT_BTC',
+                                              'Momentum': "No coins with momentum"}, ignore_index=True)
+    else:
+        pass
+
+    return top_returns
 
 
 

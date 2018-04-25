@@ -2,6 +2,9 @@ import datetime
 from datetime import timedelta
 import pandas as pd
 import requests
+
+import pandas as pd
+import pymysql.cursors
 import time
 
 class Data:
@@ -23,6 +26,11 @@ class Data:
             days=self.volume_lookback)
         self.min_date_datetime_ts = int(self.min_date_datetime.strftime("%s"))
 
+        self.connection = pymysql.connect(host='mysql-instance-dev-crypto.ceytqsjhi5fg.us-east-2.rds.amazonaws.com',
+                             user='mlivingston',
+                             password='Paradise2',
+                             db='Poloniex',
+                             port=3306)
 
     def master_df(self):
 
@@ -31,29 +39,15 @@ class Data:
         master_data = pd.DataFrame()
 
         for i in avail_pairs:
+            select = "Select * From " + i + " where date between {} and {}".format(self.min_date_datetime_ts, self.date_end_datetime_ts)
 
-            try:
-                data = pd.DataFrame(requests.get(
-                    "https://poloniex.com/public?command=returnChartData&currencyPair={}&start={}&end={}&period=300".format(
-                        i, self.min_date_datetime_ts, self.date_end_datetime_ts)).json())
-            except requests.exceptions.ChunkedEncodingError as e:
-                time.sleep(.3)
-                try:
-                    data = pd.DataFrame(requests.get(
-                    "https://poloniex.com/public?command=returnChartData&currencyPair={}&start={}&end={}&period=300".format(
-                        i, self.min_date_datetime_ts, self.date_end_datetime_ts)).json())
-                except requests.exceptions.ChunkedEncodingError as e:
-                    time.sleep(.3)
-                    data = pd.DataFrame(requests.get(
-                    "https://poloniex.com/public?command=returnChartData&currencyPair={}&start={}&end={}&period=300".format(
-                        i, self.min_date_datetime_ts, self.date_end_datetime_ts)).json())
-
-            data['Pair'] = i
+            data = pd.read_sql(select, con=self.connection)
 
             master_data = master_data.append(data)
 
-        return master_data
+        self.connection.close()
 
+        return master_data
 
     @staticmethod
     def get_avail_universe_pairs():
