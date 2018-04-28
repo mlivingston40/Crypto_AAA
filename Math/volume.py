@@ -20,7 +20,17 @@ def relevant_universe_list(coin_filter, df, start_date, end_date):
 
     # sort for top based upon 'universe_amt' parameter and return the list #
 
-    return coin_volume.sort_values(by=['avg_vol'], ascending=False).head(coin_filter)
+    coin_volume = coin_volume.sort_values(by=['avg_vol'], ascending=False).head(coin_filter)
+
+    ## quick check to make sure usdt_btc is in universe ##
+
+    if 'USDT_BTC' not in list(coin_volume.coin):
+        coin_volume = coin_volume.append({'avg_vol': 'always', 'coin': 'USDT_BTC'}, ignore_index=True)
+    else:
+        pass
+
+    return coin_volume
+
 
 
 

@@ -12,8 +12,8 @@ from wtforms import StringField, IntegerField, DateField, validators, SelectFiel
 
 from Math.trade_days import *
 from Math.trades import *
-from Data.poloniex import *
-# from Data.mysql_poloniex import *
+# from Data.poloniex import *
+from Data.mysql_poloniex import *
 import numpy as np
 import pandas as pd
 import time
@@ -154,30 +154,59 @@ def index():
 def results(date_start_,date_end_,recalibrate_days_,volume_window_days_,coin_universe_filter_number_,
             coin_allocation_number_,performance_window_days_,global_start_btc_):
 
-    # start = time.time()
+    start = time.time()
 
-    # master_data = Data(date_start_, date_end_, volume_window_days_).master_df()
+    master_data = Data(date_start_, date_end_, volume_window_days_).master_df()
+    print("done getting data")
 
     trades_days_df = TradeDays(date_start_,date_end_,volume_window_days_,performance_window_days_,recalibrate_days_).trade_days_df()
 
-    # test_df = Trades(master_data,trades_days_df,date_start_,date_end_,volume_window_days_,performance_window_days_,coin_universe_filter_number_,coin_allocation_number_,global_start_btc_).trade_positions()
+    trades = Trades(master_data,date_start_,date_end_,volume_window_days_,performance_window_days_,coin_universe_filter_number_,coin_allocation_number_,global_start_btc_)
 
-    # test = []
-    # test.append({'test': 'hello', 'test3': 'blah'})
-    # test_df = pd.DataFrame(test)
-    #
-    # # return test_df.to_html
-    # x = pd.DataFrame(np.random.randn(20, 5))
+    first_allocation = trades.first_position()
+    print("done w/ first allocation")
 
-    # return render_template('results_test.html', name='blah', data=x.to_html)
+    for i in range(0, len(trades_days_df)):
 
-    # end = time.time()
-    # print(end - start)
-    # print(len(master_data))
+        if i == 0:
 
-    # return(test_df.to_html())
+            trade_ports, btc_bag = trades.position_profit(trades.global_date_start_datetime_ts,
+                                                         trades_days_df.Trade_Date_ts[0].item(), first_allocation)
+            trade_ports['Week'] = trades_days_df.Trade_Number[0]
+            allocation = trades.trade_positions(trades_days_df.Volume_LB_Start_ts[0].item(), trades_days_df.Trade_Date_ts[0].item(),
+                                                trades_days_df.Performance_LB_Start_ts[0].item(), trades_days_df.Trade_Date_ts[0].item(),
+                                                btc_bag)
 
-    return(trades_days_df.to_html())
+        elif i == len(trades_days_df)-1:
+
+            trade_port, btc_bag = trades.position_profit(trades_days_df.Trade_Date_ts[i - 1].item(),
+                                                         trades_days_df.Trade_Date_ts[i], allocation)
+            trade_port['Week'] = trades_days_df.Trade_Number[i]
+            trade_ports = trade_ports.append(trade_port)
+            allocation = trades.trade_positions(trades_days_df.Volume_LB_Start_ts[i].item(), trades_days_df.Trade_Date_ts[i].item(),
+                                                trades_days_df.Performance_LB_Start_ts[i].item(), trades_days_df.Trade_Date_ts[i].item(),
+                                                btc_bag)
+
+            trade_port, final_btc_bag = trades.last_position_profit(allocation, trades_days_df.Trade_Date_ts.tail(1).item())
+            trade_port['Week'] = trades_days_df.Trade_Number[i] + 1
+            trade_ports = trade_ports.append(trade_port)
+
+
+        else:
+
+            trade_port, btc_bag = trades.position_profit(trades_days_df.Trade_Date_ts[i - 1].item(),
+                                                         trades_days_df.Trade_Date_ts[i], allocation)
+            trade_port['Week'] = trades_days_df.Trade_Number[i]
+            trade_ports = trade_ports.append(trade_port)
+            allocation = trades.trade_positions(trades_days_df.Volume_LB_Start_ts[i].item(), trades_days_df.Trade_Date_ts[i].item(),
+                                                trades_days_df.Performance_LB_Start_ts[i].item(), trades_days_df.Trade_Date_ts[i].item(),
+                                                btc_bag)
+
+    end = time.time()
+    print(end - start)
+    print(final_btc_bag)
+    return trade_ports.to_html()
+
 
 
 # @app.route('/analysis/<filename>')

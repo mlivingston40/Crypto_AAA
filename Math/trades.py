@@ -1,4 +1,4 @@
-import pandas
+import pandas as pd
 import datetime
 from datetime import timedelta
 from Math.volume import *
@@ -6,9 +6,8 @@ from Math.momentum import *
 
 class Trades:
 
-    def __init__(self, master_df, trade_days_df, g_date_start, g_date_end, volume_window_days, performance_window_days, vol_filter, num_coins, btc_start):
+    def __init__(self, master_df, g_date_start, g_date_end, volume_window_days, performance_window_days, vol_filter, num_coins, btc_start):
         # instantiate objects on front end #
-        self.trade_df = trade_days_df
         self.master_df = master_df
 
         self.global_date_start_str = g_date_start
@@ -38,8 +37,8 @@ class Trades:
         vol_universe = relevant_universe_list(self.vol_filter, self.master_df, vol_start,
                                               self.global_date_start_datetime_ts)
 
-        first_btc_coin_port = top_momentum_df(vol_universe.coin, self.num_coins, self.master_df, mom_start,
-                                    self.global_date_start_datetime_ts)
+        first_btc_coin_port = top_momentum_df(vol_universe, self.num_coins, self.master_df, mom_start,
+                                                self.global_date_start_datetime_ts)
 
         allocations = []
 
@@ -49,33 +48,58 @@ class Trades:
 
         return pd.DataFrame(allocations)
 
-    def trade_positions(self):
+    def position_profit(self, start, end, allocations):
 
-        for i in range(0, len(self.trade_df)):
+        df = self.master_df[(self.master_df.date >= start) & (self.master_df.date <= end)]
 
-            if i == 0:
+        returns = []
+        for i in allocations.Pair:
 
-                vol_universe = relevant_universe_list(self.vol_filter, self.master_df, vol_start, self.global_date_end_datetime_ts)
-                coin_port = top_momentum_df(vol_universe.coin, self.num_coins, self.master_df, mom_start, self.global_date_end_datetime_ts)
+            if i == 'USDT_BTC':
+
+                returns.append({'Pair': i, 'BTC_Return': 0})
 
             else:
-                pass
 
-            return pd.DataFrame(coin_port)
+                btc_return = (df[df.Pair == i].weightedAverage.tail(1).values - df[
+                    df.Pair == i].weightedAverage.head(1).values) / df[df.Pair == i].weightedAverage.head(1).values
 
+                returns.append({'Pair': i, 'BTC_Return': btc_return[0]})
 
-    def last_position_profit(self, last_allocations):
+        returns = pd.DataFrame(returns)
 
-        df = self.master_df[(self.master_df.date >= self.trade_df.Trade_Date_ts.tail(1).item()) & (self.master_df.date <= self.global_date_end_datetime_ts)]
+        joined = pd.merge(allocations, returns, on ='Pair', how='inner')
+
+        joined['profits'] = (joined.BTC_Allocation * joined.BTC_Return) + joined.BTC_Allocation
+
+        return joined, joined.profits.sum()
+
+    def trade_positions(self, start_v, end_v, start_m, end_m, btc_bag):
+
+        vol_universe = relevant_universe_list(self.vol_filter, self.master_df, start_v,
+                                              end_v)
+
+        btc_port = top_momentum_df(vol_universe, self.num_coins, self.master_df, start_m,
+                                    end_m)
+
+        allocations = []
+
+        for i in btc_port.Pair:
+
+            allocations.append({'Pair': i, 'BTC_Allocation': btc_bag/len(btc_port)})
+
+        return pd.DataFrame(allocations)
+
+    def last_position_profit(self, last_allocations, start):
+
+        df = self.master_df[(self.master_df.date >= start) & (self.master_df.date <= self.global_date_end_datetime_ts)]
 
         returns = []
         for i in last_allocations.Pair:
 
             if i == 'USDT_BTC':
 
-                btc_return = 0
-
-                returns.append({'Pair': i, 'BTC_Return': btc_return[0]})
+                returns.append({'Pair': i, 'BTC_Return': 0})
 
             else:
 
@@ -87,7 +111,7 @@ class Trades:
 
         returns = pd.DataFrame(returns)
 
-        joined = pd.merge(last_btc_coin_port, returns, on ='Pair', how='inner')
+        joined = pd.merge(last_allocations, returns, on ='Pair', how='inner')
 
         joined['profits'] = (joined.BTC_Allocation * joined.BTC_Return) + joined.BTC_Allocation
 

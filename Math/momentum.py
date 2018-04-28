@@ -9,7 +9,7 @@ def top_momentum_df(rel_universe, num_coins_allocate, df, start_date, end_date):
 
 
     returns = []
-    for i in rel_universe:
+    for i in rel_universe.coin:
 
         mom = (df_mom[df_mom.Pair == i].weightedAverage.tail(1).values - df_mom[
             df_mom.Pair == i].weightedAverage.head(1).values) / df_mom[df_mom.Pair == i].weightedAverage.head(
