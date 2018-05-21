@@ -26,11 +26,11 @@ class Data:
             days=self.volume_lookback)
         self.min_date_datetime_ts = int(self.min_date_datetime.strftime("%s"))
 
-        self.connection = pymysql.connect(host='mysql-instance-dev-crypto.ceytqsjhi5fg.us-east-2.rds.amazonaws.com',
-                             user='mlivingston',
-                             password='Paradise2',
-                             db='Poloniex',
-                             port=3306)
+        self.connection = pymysql.connect(host='host',
+                             user='user',
+                             password='pw',
+                             db='db',
+                             port=port)
 
     def master_df(self):
 

@@ -2,6 +2,7 @@ import pandas as pd
 ## should build something in for no return at all
 ###make just btc then
 
+
 def top_momentum_df(rel_universe, num_coins_allocate, df, start_date, end_date):
 
     # This will already be in memory - the master dataframe from class Data #
